@@ -6,7 +6,6 @@ import { Card, CardActions, CardContent, Grid, IconButton, Typography } from '@m
 import React from 'react';
 
 interface CardTaskProps {
-    id: string;
     description: string;
     detail: string;
     favorite: string;
@@ -16,10 +15,10 @@ interface CardTaskProps {
     mode: 'tasks' | 'favorites';
 }
 
-const CardTask: React.FC<CardTaskProps> = ({ description, detail, favorite, id, actionDelete, actionEdit, actionFavorite, mode }) => {
+const CardTask: React.FC<CardTaskProps> = ({ description, detail, favorite, actionDelete, actionEdit, actionFavorite, mode }) => {
     return (
         <>
-            <Grid key={id} item xs={12} sm={6} md={3}>
+            <Grid item xs={12} sm={6} md={3}>
                 <Card>
                     <CardContent>
                         <Typography gutterBottom variant="h5" component="div">

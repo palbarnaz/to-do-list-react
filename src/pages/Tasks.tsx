@@ -1,13 +1,12 @@
 import AddIcon from '@mui/icons-material/Add';
 import { Fab } from '@mui/material';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import AlertInfo from '../components/AlertInfo';
-import CardTask from '../components/CardTask';
-import DialogTask from '../components/DialogTask';
-import ListTasks from '../components/ListTasks';
-import ModalConfirm from '../components/ModalConfirm';
+import DialogTask from '../components/tasks/DialogTask';
+import ListTasks from '../components/tasks/ListTasks';
+import ModalConfirm from '../components/tasks/ModalConfirm';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { saveTask, selectAll } from '../store/modules/usersSlice';
 import { Task } from '../types/Task';
@@ -33,7 +32,7 @@ const Tasks: React.FC = () => {
     const userLogged = users.find((item) => item.emailUser === userLoggedEmail) as Users;
 
     useEffect(() => {
-        if (!userLoggedEmail || userLoggedEmail.length === 0) {
+        if (!userLoggedEmail) {
             navigate('/');
         }
     }, []);
@@ -133,26 +132,15 @@ const Tasks: React.FC = () => {
         setAlertDelete(false);
     };
 
-    const tasks = useMemo(() => {
-        return userLogged.tasks.map((item: any) => {
-            return (
-                <CardTask
-                    mode="tasks"
-                    id={item.id}
-                    description={item.description}
-                    detail={item.detail}
-                    favorite={item.favorite}
-                    actionFavorite={() => addFavorite(item)}
-                    actionEdit={() => openModalEdit(item)}
-                    actionDelete={() => openModalDelete(item)}
-                />
-            );
-        });
-    }, [userLogged]);
-
     return (
         <>
-            <ListTasks title="Meus Recados " cards={tasks} />
+            <ListTasks
+                title="Meus Recados "
+                tasks={userLogged?.tasks || []}
+                actionFavorite={addFavorite}
+                actionDelete={openModalDelete}
+                actionEdit={openModalEdit}
+            />
             <AlertInfo actionCancel={cancelAlert} show={alertEdit} msg="Recado editado com sucesso!" type="success" />
             <AlertInfo actionCancel={cancelAlert} show={alertCreate} msg="Recado cadastrado com sucesso!" type="success" />
             <AlertInfo actionCancel={cancelAlert} show={alertDelete} msg="Recado excluido" type="error" />

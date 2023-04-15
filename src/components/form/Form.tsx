@@ -4,10 +4,10 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 
-import { useAppSelector } from '../store/hooks';
-import { saveUserLogged } from '../store/modules/userLoggedSlice';
-import { saveUser, selectAll } from '../store/modules/usersSlice';
-import AlertInfo from './AlertInfo';
+import { useAppSelector } from '../../store/hooks';
+import { saveUserLogged } from '../../store/modules/userLoggedSlice';
+import { saveUser, selectAll } from '../../store/modules/usersSlice';
+import AlertInfo from '../AlertInfo';
 
 interface FormProps {
     mode: 'signin' | 'signup';

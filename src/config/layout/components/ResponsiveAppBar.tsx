@@ -13,9 +13,9 @@ import Typography from '@mui/material/Typography';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import routes from '../routes/routes';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { saveUserLogged } from '../store/modules/userLoggedSlice';
+import routes from '../../../routes/routes';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { logoutUser } from '../../../store/modules/userLoggedSlice';
 
 const settings = ['Logout'];
 
@@ -40,7 +40,7 @@ const ResponsiveAppBar: React.FC = () => {
     };
 
     const handleCloseUserMenu = () => {
-        dispatch(saveUserLogged(''));
+        dispatch(logoutUser());
         navigate('/');
     };
 

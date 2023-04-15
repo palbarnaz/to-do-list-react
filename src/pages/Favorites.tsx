@@ -1,27 +1,30 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import CardTask from '../components/CardTask';
-import ListTasks from '../components/ListTasks';
+import ListTasks from '../components/tasks/ListTasks';
 import { useAppSelector } from '../store/hooks';
 import { selectAll } from '../store/modules/usersSlice';
 import Users from '../types/Users';
 
 const Favorites: React.FC = () => {
+    const navigate = useNavigate();
     const userLoggedEmail = useAppSelector((state) => state.userLogged.value);
     const users = useAppSelector(selectAll);
     const userLogged = users.find((item) => item.emailUser === userLoggedEmail) as Users;
 
+    useEffect(() => {
+        if (!userLoggedEmail) {
+            navigate('/');
+        }
+    }, []);
+
     const favoriteTasks = useMemo(() => {
-        return userLogged.tasks
-            .filter((item) => item.favorite === true)
-            .map((item: any) => {
-                return <CardTask mode="favorites" id={item.id} description={item.description} detail={item.detail} favorite={item.favorite} />;
-            });
+        return userLogged?.tasks.filter((item) => item.favorite === true);
     }, [userLogged]);
 
     return (
         <>
-            <ListTasks title="Recados Favoritos" cards={favoriteTasks} />
+            <ListTasks title="Recados Favoritos" tasks={favoriteTasks || []} />
         </>
     );
 };

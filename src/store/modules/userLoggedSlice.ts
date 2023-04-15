@@ -9,7 +9,10 @@ const slice = createSlice({
     initialState,
     reducers: {
         saveUserLogged: (_, action: PayloadAction<string>) => ({ value: action.payload }),
+        logoutUser: () => ({
+            value: '',
+        }),
     },
 });
-export const { saveUserLogged } = slice.actions;
+export const { saveUserLogged, logoutUser } = slice.actions;
 export const userLoggedReducer = slice.reducer;
