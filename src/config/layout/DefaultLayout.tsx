@@ -1,8 +1,7 @@
 import { Container, Grid } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import ResponsiveAppBar from '../../components/ResponsiveAppBar';
-import Users from '../../types/Users';
 
 interface DefaultLayoutProps {
     component: React.FC;

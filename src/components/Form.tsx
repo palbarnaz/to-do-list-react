@@ -7,6 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAppSelector } from '../store/hooks';
 import { saveUserLogged } from '../store/modules/userLoggedSlice';
 import { saveUser, selectAll } from '../store/modules/usersSlice';
+import AlertInfo from './AlertInfo';
 
 interface FormProps {
     mode: 'signin' | 'signup';
@@ -21,6 +22,10 @@ const Form: React.FC<FormProps> = ({ mode, textButton }) => {
     const [errorEmail, setErrorEmail] = useState(false);
     const [errorPassword, setErrorPassword] = useState(false);
     const [errorRepassword, setErrorRepassword] = useState(false);
+    const [alertCreateUser, setAlertCreateUser] = useState<boolean>(false);
+    const [alertInfo, setAlertInfo] = useState<boolean>(false);
+    const [alertUserError, setAlertUserError] = useState<boolean>(false);
+
     const users = useAppSelector(selectAll);
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -53,7 +58,7 @@ const Form: React.FC<FormProps> = ({ mode, textButton }) => {
         if (mode === 'signup') {
             const exist = users.some((item) => item.emailUser === emailUser);
             if (exist) {
-                alert('Usuário já cadastrado!');
+                setAlertInfo(true);
             } else {
                 dispatch(
                     saveUser({
@@ -63,22 +68,40 @@ const Form: React.FC<FormProps> = ({ mode, textButton }) => {
                         tasks: [],
                     })
                 );
-                alert('Usuário cadastrado com sucesso!');
+
+                setAlertCreateUser(true);
+                setEmailUser('');
+                setPassword('');
+                setRepassword('');
             }
         } else {
             const findUser = users.find((valor) => valor.emailUser === emailUser && valor.password === password);
             if (!findUser) {
-                alert('Conta não cadastrada! Verifique o usuário ou senha.');
+                setAlertUserError(true);
                 return;
             }
             dispatch(saveUserLogged(findUser.emailUser));
-
             navigate('/tasks');
         }
     }
 
+    const cancelAlert = () => {
+        if (alertCreateUser) {
+            setAlertCreateUser(false);
+        } else if (alertUserError) {
+            setAlertUserError(false);
+            return;
+        }
+
+        setAlertInfo(false);
+    };
+
     return (
         <Box component="form" marginTop={1} onSubmit={(e) => addUsers(e)}>
+            <AlertInfo actionCancel={cancelAlert} show={alertCreateUser} msg="Usuário cadastrado com sucesso!" type="success" />
+            <AlertInfo actionCancel={cancelAlert} show={alertInfo} msg="Usuário já cadastrado!" type="info" />
+            <AlertInfo actionCancel={cancelAlert} show={alertUserError} msg="Conta não cadastrada! Verifique o usuário ou senha." type="error" />
+
             <TextField
                 value={emailUser}
                 name="emailUser"

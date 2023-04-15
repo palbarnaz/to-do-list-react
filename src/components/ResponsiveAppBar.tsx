@@ -14,7 +14,8 @@ import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import routes from '../routes/routes';
-import { useAppSelector } from '../store/hooks';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { saveUserLogged } from '../store/modules/userLoggedSlice';
 
 const settings = ['Logout'];
 
@@ -22,6 +23,7 @@ const ResponsiveAppBar: React.FC = () => {
     const navigate = useNavigate();
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+    const dispatch = useAppDispatch();
     const userLogged = useAppSelector((state) => state.userLogged.value);
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -38,7 +40,7 @@ const ResponsiveAppBar: React.FC = () => {
     };
 
     const handleCloseUserMenu = () => {
-        // localStorage.removeItem('userLogged');
+        dispatch(saveUserLogged(''));
         navigate('/');
     };
 

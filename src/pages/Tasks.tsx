@@ -1,16 +1,12 @@
-import { FavoriteBorderSharp } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
-import DeleteSharpIcon from '@mui/icons-material/DeleteSharp';
-import EditSharpIcon from '@mui/icons-material/EditSharp';
-import FavoriteSharpIcon from '@mui/icons-material/FavoriteSharp';
-import { Container, Divider, Fab, Grid, IconButton, Typography } from '@mui/material';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
+import { Fab } from '@mui/material';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import AlertInfo from '../components/AlertInfo';
+import CardTask from '../components/CardTask';
 import DialogTask from '../components/DialogTask';
+import ListTasks from '../components/ListTasks';
 import ModalConfirm from '../components/ModalConfirm';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { saveTask, selectAll } from '../store/modules/usersSlice';
@@ -25,15 +21,19 @@ const Tasks: React.FC = () => {
     const [openDialogCreate, setOpenDialogCreate] = React.useState(false);
     const [openDialogEdit, setOpenDialogEdit] = React.useState(false);
     const [open, setOpen] = React.useState(false);
-    const userLoggedEmail = useAppSelector((state) => state.userLogged.value);
     const [taskRemove, setTaskRemove] = useState<Task | undefined>();
     const [taskEdit, setTaskEdit] = useState<Task | undefined>();
-    const users = useAppSelector(selectAll);
-    const userLogged = users.find((item) => item.emailUser === userLoggedEmail) as Users;
+    const [alertCreate, setAlertCreate] = useState<boolean>(false);
+    const [alertEdit, setAlertEdit] = useState<boolean>(false);
+    const [alertDelete, setAlertDelete] = useState<boolean>(false);
+
     const dispatch = useAppDispatch();
+    const users = useAppSelector(selectAll);
+    const userLoggedEmail = useAppSelector((state) => state.userLogged.value);
+    const userLogged = users.find((item) => item.emailUser === userLoggedEmail) as Users;
 
     useEffect(() => {
-        if (!userLoggedEmail) {
+        if (!userLoggedEmail || userLoggedEmail.length === 0) {
             navigate('/');
         }
     }, []);
@@ -46,17 +46,21 @@ const Tasks: React.FC = () => {
         }
     }, [description]);
 
+    const handleClickOpen = () => {
+        setOpenDialogCreate(true);
+    };
+    const handleClose = () => {
+        setOpenDialogCreate(false);
+    };
+
     const saveTasks = () => {
         const userTasks = userLogged?.tasks || [];
         const newTasks = [...userTasks, { id: Date.now(), description, detail, favorite: false }];
         dispatch(saveTask({ id: userLogged?.id, changes: { tasks: newTasks } }));
+        setAlertCreate(true);
         setDescription('');
         setDetail('');
         setOpenDialogCreate(false);
-    };
-
-    const handleClickOpen = () => {
-        setOpenDialogCreate(true);
     };
 
     const openModalEdit = (itemEdit: Task) => {
@@ -66,17 +70,9 @@ const Tasks: React.FC = () => {
         setOpenDialogEdit(true);
     };
 
-    const handleClose = () => {
-        setOpenDialogCreate(false);
-    };
-
     const handleCloseEdit = () => {
         setOpenDialogEdit(false);
     };
-    const closeModalConfirm = useCallback(() => {
-        setOpen(false);
-        setTaskRemove(undefined);
-    }, []);
 
     const editTask = useCallback(() => {
         const newTasks = userLogged.tasks.map((item) => {
@@ -87,10 +83,21 @@ const Tasks: React.FC = () => {
         });
 
         dispatch(saveTask({ id: userLogged.id, changes: { tasks: newTasks } }));
+        setAlertEdit(true);
         setDescription('');
         setDetail('');
         setOpenDialogEdit(false);
     }, [userLogged, taskEdit, description, detail]);
+
+    const openModalDelete = (itemRemove: Task) => {
+        setTaskRemove(itemRemove);
+        setOpen(true);
+    };
+
+    const closeModalConfirm = useCallback(() => {
+        setOpen(false);
+        setTaskRemove(undefined);
+    }, []);
 
     const removeTask = useCallback(() => {
         const index = userLogged.tasks.findIndex((item) => item.id === taskRemove?.id);
@@ -101,6 +108,7 @@ const Tasks: React.FC = () => {
 
             dispatch(saveTask({ id: userLogged.id, changes: { tasks: newTasks } }));
             closeModalConfirm();
+            setAlertDelete(true);
         }
     }, [userLogged, taskRemove]);
 
@@ -109,90 +117,71 @@ const Tasks: React.FC = () => {
             if (item.id === recado.id) {
                 return { ...item, favorite: !item.favorite };
             }
-
             return item;
         });
-
         dispatch(saveTask({ id: userLogged.id, changes: { tasks: newTasks } }));
     };
 
-    const openModalDelete = (itemRemove: Task) => {
-        setTaskRemove(itemRemove);
-        setOpen(true);
+    const cancelAlert = () => {
+        if (alertCreate) {
+            setAlertCreate(false);
+        } else if (alertEdit) {
+            setAlertEdit(false);
+            return;
+        }
+
+        setAlertDelete(false);
     };
 
-    const memo = useMemo(() => {
+    const tasks = useMemo(() => {
         return userLogged.tasks.map((item: any) => {
             return (
-                <Grid key={item.id} item xs={12} sm={6} md={3}>
-                    <Card>
-                        <CardContent>
-                            <Typography gutterBottom variant="h5" component="div">
-                                {item.description}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                {item.detail}
-                            </Typography>
-                        </CardContent>
-                        <CardActions>
-                            <IconButton size="small" onClick={() => addFavorite(item)}>
-                                {item.favorite ? <FavoriteSharpIcon color="error" /> : <FavoriteBorderSharp />}
-                            </IconButton>
-                            <IconButton onClick={() => openModalEdit(item)} size="small">
-                                <EditSharpIcon sx={{ color: '#ab47bc' }} />
-                            </IconButton>
-                            <IconButton onClick={() => openModalDelete(item)} size="small">
-                                <DeleteSharpIcon />
-                            </IconButton>
-                        </CardActions>
-                    </Card>
-                </Grid>
+                <CardTask
+                    mode="tasks"
+                    id={item.id}
+                    description={item.description}
+                    detail={item.detail}
+                    favorite={item.favorite}
+                    actionFavorite={() => addFavorite(item)}
+                    actionEdit={() => openModalEdit(item)}
+                    actionDelete={() => openModalDelete(item)}
+                />
             );
         });
     }, [userLogged]);
 
     return (
         <>
-            <Grid container marginBottom={10}>
-                <Grid item xs={12}>
-                    <Container sx={{ marginTop: '20px' }}>
-                        <Grid container spacing={4}>
-                            <Grid item xs={12}>
-                                <Typography variant="h4">Recados</Typography>
-                                <Divider />
-                            </Grid>
-                            {memo}
-                        </Grid>
-                    </Container>
-                </Grid>
-                <DialogTask
-                    title="Adicionar recado"
-                    titleBtn="Cadastrar"
-                    valid={!valid}
-                    openModal={openDialogCreate}
-                    detail={detail}
-                    description={description}
-                    actionDetail={(ev) => setDetail(ev.target.value)}
-                    actionDescription={(ev) => setDescription(ev.target.value)}
-                    actionCancel={handleClose}
-                    actionConfirm={saveTasks}
-                />
-                <DialogTask
-                    title="Editar recado"
-                    titleBtn="Editar"
-                    valid={!valid}
-                    openModal={openDialogEdit}
-                    description={description}
-                    detail={detail}
-                    actionDetail={(ev) => {
-                        setDetail(ev.target.value);
-                        console.log(ev.target.value);
-                    }}
-                    actionDescription={(ev) => setDescription(ev.target.value)}
-                    actionCancel={handleCloseEdit}
-                    actionConfirm={editTask}
-                />
-            </Grid>
+            <ListTasks title="Meus Recados " cards={tasks} />
+            <AlertInfo actionCancel={cancelAlert} show={alertEdit} msg="Recado editado com sucesso!" type="success" />
+            <AlertInfo actionCancel={cancelAlert} show={alertCreate} msg="Recado cadastrado com sucesso!" type="success" />
+            <AlertInfo actionCancel={cancelAlert} show={alertDelete} msg="Recado excluido" type="error" />
+            <DialogTask
+                title="Adicionar recado"
+                titleBtn="Cadastrar"
+                valid={!valid}
+                openModal={openDialogCreate}
+                detail={detail}
+                description={description}
+                actionDetail={(ev) => setDetail(ev.target.value)}
+                actionDescription={(ev) => setDescription(ev.target.value)}
+                actionCancel={handleClose}
+                actionConfirm={saveTasks}
+            />
+            <DialogTask
+                title="Editar recado"
+                titleBtn="Editar"
+                openModal={openDialogEdit}
+                description={description}
+                detail={detail}
+                actionDetail={(ev) => {
+                    setDetail(ev.target.value);
+                    console.log(ev.target.value);
+                }}
+                actionDescription={(ev) => setDescription(ev.target.value)}
+                actionCancel={handleCloseEdit}
+                actionConfirm={editTask}
+            />
             <ModalConfirm
                 actionCancel={closeModalConfirm}
                 actionConfirm={removeTask}

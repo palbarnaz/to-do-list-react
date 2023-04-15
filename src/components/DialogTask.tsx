@@ -6,7 +6,7 @@ interface DialogTaskProps {
     titleBtn: string;
     description: string;
     detail: string;
-    valid: boolean;
+    valid?: boolean;
     openModal: boolean;
     actionConfirm: () => void;
     actionCancel: () => void;
