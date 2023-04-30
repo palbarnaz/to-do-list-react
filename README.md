@@ -5,7 +5,7 @@ Atividade desenvolvida para a conclusão do módulo front end III do programa de
 O projeto consiste em cadastro e login de usuário, tendo um CRUD (Create, Read, Update e Delete)
 para as operações da Lista de Recados. Persistindo todos os dados no local storage. 
 
-Algumas ferramentas utilizadas foram  Material UI, Redux Toolkit, Redux Persist...
+Algumas ferramentas utilizadas foram  Material UI, Reactjs, Redux Toolkit, Redux Persist...
 
 
 Link para acesso à aplicação na nuvem (Vercel) -> https://to-do-list-react-ruby.vercel.app/
