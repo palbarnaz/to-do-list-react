@@ -4,7 +4,7 @@ const initialState = {
     value: '',
 };
 
-const slice = createSlice({
+const userLogged = createSlice({
     name: 'userLogged',
     initialState,
     reducers: {
@@ -14,5 +14,5 @@ const slice = createSlice({
         }),
     },
 });
-export const { saveUserLogged, logoutUser } = slice.actions;
-export const userLoggedReducer = slice.reducer;
+export const { saveUserLogged, logoutUser } = userLogged.actions;
+export const userLoggedReducer = userLogged.reducer;

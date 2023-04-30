@@ -141,6 +141,7 @@ const Tasks: React.FC = () => {
                 actionDelete={openModalDelete}
                 actionEdit={openModalEdit}
             />
+
             <AlertInfo actionCancel={cancelAlert} show={alertEdit} msg="Recado editado com sucesso!" type="success" />
             <AlertInfo actionCancel={cancelAlert} show={alertCreate} msg="Recado cadastrado com sucesso!" type="success" />
             <AlertInfo actionCancel={cancelAlert} show={alertDelete} msg="Recado excluido" type="error" />

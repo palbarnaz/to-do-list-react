@@ -1,4 +1,5 @@
 import { Container, Divider, Grid, Typography } from '@mui/material';
+import { Box } from '@mui/system';
 import React from 'react';
 
 import { Task } from '../../types/Task';
@@ -27,20 +28,26 @@ const ListTasks: React.FC<ListTasksProps> = ({ tasks, title, actionDelete, actio
                             <Typography variant="h4">{title}</Typography>
                             <Divider />
                         </Grid>
-                        {tasks.map((item: any) => {
-                            return (
-                                <CardTask
-                                    key={item.id}
-                                    mode="tasks"
-                                    description={item.description}
-                                    detail={item.detail}
-                                    favorite={item.favorite}
-                                    actionFavorite={() => executeAction(item, actionFavorite)}
-                                    actionEdit={() => executeAction(item, actionEdit)}
-                                    actionDelete={() => executeAction(item, actionDelete)}
-                                />
-                            );
-                        })}
+                        {tasks.length ? (
+                            tasks.map((item: any) => {
+                                return (
+                                    <CardTask
+                                        key={item.id}
+                                        mode="tasks"
+                                        description={item.description}
+                                        detail={item.detail}
+                                        favorite={item.favorite}
+                                        actionFavorite={() => executeAction(item, actionFavorite)}
+                                        actionEdit={() => executeAction(item, actionEdit)}
+                                        actionDelete={() => executeAction(item, actionDelete)}
+                                    />
+                                );
+                            })
+                        ) : (
+                            <Box margin={5}>
+                                <Typography variant="h6">Nenhum recado existente!</Typography>
+                            </Box>
+                        )}
                     </Grid>
                 </Container>
             </Grid>

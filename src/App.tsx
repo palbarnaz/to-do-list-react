@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 
 import GStyles from './config/GlobalStyles';
-import AppRoutes from './routes/AppRoutes';
+import AppRoutes from './Routes/AppRoutes';
 import { persistor, store } from './store';
 
 function App() {

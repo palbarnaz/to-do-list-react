@@ -13,7 +13,7 @@ import Typography from '@mui/material/Typography';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import routes from '../../../routes/routes';
+import routes from '../../../Routes/routes';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { logoutUser } from '../../../store/modules/userLoggedSlice';
 

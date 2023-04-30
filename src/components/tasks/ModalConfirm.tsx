@@ -24,7 +24,7 @@ const ModalConfirm: React.FC<ModalConfirmProps> = ({ tittle, description, detail
         <Dialog open={openModal} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
             <DialogTitle id="alert-dialog-title">{tittle}</DialogTitle>
             <DialogContent>
-                <Card>
+                <Card sx={{ margin: '15px' }}>
                     <CardContent>
                         <Typography gutterBottom variant="h5" component="div">
                             {description}
@@ -36,8 +36,29 @@ const ModalConfirm: React.FC<ModalConfirmProps> = ({ tittle, description, detail
                 </Card>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose}>Cancelar</Button>
-                <Button onClick={actionConfirm} autoFocus>
+                <Button
+                    variant="contained"
+                    sx={{
+                        backgroundColor: '#3a3a3a',
+                        ':hover': {
+                            backgroundColor: '#3a3a3a',
+                        },
+                    }}
+                    onClick={handleClose}
+                >
+                    Cancelar
+                </Button>
+                <Button
+                    variant="contained"
+                    sx={{
+                        backgroundColor: '#3a3a3a',
+                        ':hover': {
+                            backgroundColor: '#3a3a3a',
+                        },
+                    }}
+                    onClick={actionConfirm}
+                    autoFocus
+                >
                     Confirmar
                 </Button>
             </DialogActions>
